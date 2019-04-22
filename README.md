@@ -1,7 +1,9 @@
 # PHP-Single-Page-Applicaiton
 
 This web application is a single page application built with PHP, JavaScript, RESTful API, JWT.
-The project is lightly bootstrapped, so there isnt much fancy UI out there. However, it provides the concept of building SPA with just pure JavaScript without using other frameworks like Angular, React, Vue
+The project is lightly bootstrapped, so there isnt much fancy UI out there. However, it provides the concept of building SPA with just pure JavaScript without using other frameworks like Angular, React, Vue.
+
+This project supports full CRUD for information management purpose, search function, pagination function, multiple-order-shopping cart function.
 
 ### Prerequisites
 
@@ -87,5 +89,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Special thanks to Bernado for his development skills and dedication into this project.
+* Special thanks to Bernado for his development skills, experience and dedication into this project.
 
