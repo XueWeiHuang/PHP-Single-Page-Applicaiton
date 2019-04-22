@@ -1,0 +1,90 @@
+<?php
+// required headers
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+// include database and object files
+include_once '../config/database.php';
+include_once '../objects/supplier.php';
+include_once '../shared/token.php';
+
+// json web token
+$token = new Token();
+
+// authorize user with jwt
+if(isset(apache_request_headers()['Authorization']) and $token->validate((apache_request_headers()['Authorization']))){
+
+    // instantiate database and category object
+    $database = new Database();
+    $db = $database->getConnection();
+    $supplier = new Supplier($db);
+
+    // get posted data
+    $data = json_decode(file_get_contents("php://input"));
+
+    // make sure data is not empty
+    if(
+        !empty($data->companyname) &&
+        !empty($data->contactname) &&
+        !empty($data->contacttitle) &&
+        !empty($data->address) &&
+        !empty($data->city) &&
+        !empty($data->country) &&
+        !empty($data->phone)
+
+    ){
+
+        // set supplier property values
+        $supplier->companyname = $data->companyname;
+        $supplier->contactname = $data->contactname;
+        $supplier->contacttitle = $data->contacttitle;
+        $supplier->address = $data->address;
+        $supplier->city = $data->city;
+        $supplier->region = $data->region;
+        $supplier->postalcode = $data->postalcode;
+        $supplier->country = $data->country;
+        $supplier->phone = $data->phone;
+        $supplier->fax = $data->fax;
+
+        // create the supplier
+        if($supplier->create()){
+
+            // set response code - 201 created
+            http_response_code(201);
+
+            // tell the user
+            echo json_encode(array("message" => "Supplier was created."));
+        }
+
+        // if unable to create the supplier, tell the user
+        else{
+
+            // set response code - 503 service unavailable
+            http_response_code(503);
+
+            // tell the user
+            echo json_encode(array("message" => "Unable to create supplier."));
+        }
+    }
+
+    // tell the user data is incomplete
+    else{
+
+        // set response code - 400 bad request
+        http_response_code(400);
+
+        // tell the user
+        echo json_encode(array("message" => "Unable to create supplier. Data is incomplete."));
+    }
+
+} else {
+
+    // set response code
+    http_response_code(401);
+
+    // tell the user access denied
+    echo json_encode(array("message" => "Access denied."));
+}
